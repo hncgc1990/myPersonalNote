@@ -1,0 +1,59 @@
+plugins{
+   id 'base'
+}
+
+
+
+task copy(type:Copy){
+	from 'src'
+	into 'dest'
+}
+
+//压缩
+task zip(type:Zip){
+
+    from 'src'
+}
+
+
+
+class Greeting extends DefaultTask{
+
+	String message
+	String recipient
+	
+        @TaskAction
+	void sayGreeting(){
+	    println "${message},${recipient}!"	
+        }
+
+
+}
+
+
+
+//给task添加描述和分组
+task hello(type:Greeting){
+        group 'Welcome'
+ 	description 'Produces a greeting'
+        message 'Hehe'
+        recipient 'keke'
+	doLast{
+	    println 'Hello,World!'
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

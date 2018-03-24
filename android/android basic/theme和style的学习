@@ -1,0 +1,27 @@
+Theme
+	一直比较疑惑Theme和style是怎么个工作法的，在项目里面也要经常用到，像按钮的样式什么的还会用，一旦涉及到dialog之类的就比较懵了，今天就决定要看一看这两个
+东西要怎么个自定义法，首先我们得找到系统自身定义的Theme和Style,在哪里可以找到呢，这是个问题，
+
+	1.<!-- Text styles -->
+	2.<!-- Button styles -->
+	3.<!-- List attributes -->
+	4.<!-- Gallery attributes -->
+	5. <!-- Window attributes -->
+	6.<!-- Dialog attributes -->
+	7.<!-- AlertDialog attributes -->
+	8. <!-- Toast attributes -->
+	9.<!-- Panel attributes -->
+	10.<!-- Scrollbar attributes -->
+	11.<!-- Text selection handle attributes -->
+	12.<!-- Widget styles -->
+	13.<!-- Preference styles -->
+	14.<!-- Search widget styles -->
+	15.<!-- Action bar styles -->
+	16.<!-- SearchView attributes -->
+	17.<!-- PreferenceFrameLayout attributes -->
+	18.<!-- NumberPicker style-->
+	19.<!-- CalendarView style-->
+	20.<!-- TimePicker style -->
+	21.<!-- DatePicker style -->
+	22.<!-- Pointer style -->
+	23.<!-- Accessibility focused drawable. -->

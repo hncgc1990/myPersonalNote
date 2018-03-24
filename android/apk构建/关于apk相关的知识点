@@ -1,0 +1,101 @@
+1.Dialog的使用
+　　　　使用DialogFragment时，当dialog显示时，点击返回键会回调DialogFragment的onCancle()方法．系统会自动删除当前的Fragment，不用手动的去调用dismiss()方法来隐藏dialog.
+
+2.关于Fragment的状态保存问题　记住保存笔记
+FragmentManager有这样的一个方法，saveFragmentInstanceState()
+Fragment有一个setInitialSavedState()方法来保存状态
+关于这种保存状态的方法，你需要知道的是：
+　　　1.被保存的Fragment必须要Attach在FragmentManager中
+   2.用SaveState对象新建的Fragment必须跟保存时的类型保持一致
+　　　3.SaveState中不可以持有其他的Fragment的引用，因为在重建时并不能保证其他的Fragment的存在．
+　　　4.当setInitialSavedState方法设置为true的条件时，当Activity被销毁或者被系统reOncreate的时候，  Fragment的onDestroy方法或者onCreate方法将不会被调用,只有onAttach和onActivityCreated方法会被调用．这个只对没有保存在回退栈的Fragment有效．当Fragment没有UI的时候特别有用．
+　　 5.同时，在FragmentManager使用saveFragmentInstanceState()方法时，有些状态是不包含在这个对象中的，例如被保存的Fragment的targetFragment和resultcode．
+
+
+第十四章　安全和权限
+　
+我们使用的是JDK中的jarsigner来对apk文件进行签名的．
+打包的详细过程，可以作为一个课题进行研究．．．．．．
+1.创建一个文件夹用来存放签名　如：c:\android\release\　
+２．使用keytool这个工具来生成签名
+具体命令：
+keytool -genkey -v -keystore "c:\android\release\release.keystore"
+-alias androidbook -storepass paxxword -keypass paxxword -keyalg RSA
+-validity 14000	
+
+具体每个参数的涵义：
+　　genkey   生成签名
+　　　v       打印日志之类的信息
+ keystore  签名保存的目录位置
+  alias    别名，之后用于引用keystore的入口
+ storepass 密码
+ keypass   密码
+　keyalg    使用的算法
+ validity  有效期　单位天数
+
+如果你在命令中没有提供密码字段，keytool会提示让你填写．同时还会有公司等信息的填写
+
+eclipse 会自动帮你生成一个有效期为365天的签名debug.keystore
+可以在eclipse的Preferences／Android/Build中找到它的位置．
+
+如果你想自定义这个dubug.keystore的有效期，以下为生成的相关信息
+alias       		androiddebugkey
+storepass   		android 
+keypass     		android 
+firstname   		Android Debug
+lastname    		Android Debug
+organizational unit     Android 
+two-letter country code US
+organizetion		UnKnown
+city			UnKnown
+state 			UnKnown
+
+3.使用jarsigner对apk文件进行签名
+　　命令：
+jarsigner -keystore "PATH TO YOUR release.keystore FILE" -storepass paxxword
+-keypass paxxword "PATH TO YOUR RAW APK FILE" androidbook
+
+
+使用zipalign工具对apk中的图片和文件进行进行４字节的对齐，以减少应用程序RAM内存资源的消耗．
+1.对已有的Apk文件进行处理
+　　命令：zipalign –v 4 infile.apk outfile.apk
+２．检测已有的Apk文件是否进行了zipalign的处理
+　　　 命令：zipalign –c –v 4 filename.apk
+在Eclipse使用导出进行打包时，adt会为你实现zipalign的优化过程．
+
+使用命令进行手动安装apk
+安装
+　　　命令：adb install "PATH TO APK FILE GOES HERE"
+卸载
+　　　命令：adb uninstall packagename
+覆盖安装(保留data数据)
+   　　命令：adb install –r "PATH TO APK FILE GOES HERE"
+
+安卓只有在安装的时候才会检查签名的有效期，所以即使签名过期了，程序还是会正常运行．但是，如果你在更新程序的时候，签名已经过期，那么安卓是不会让你安装的，唯有另建立一个新的签名重新打包了．
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
