@@ -673,12 +673,15 @@ task zip(type: Zip) {
     }
 }
 ```
+
 #####  6.1生成的压缩文件的默认命名规则
-```projectName-version.type```,可以通过配置多个属性进行自定义,具体参考[]()
+```projectName-version.type``` 可以通过配置多个属性进行自定义,具体参考[]()
+
 
 
 ##### 6.2 可重写的压缩包
 为了让压缩包无论在任何时候，任何环境生成，都保持一致,需要将Zip.isReproducibleFileOrder()设置为true和将Zip.isPreserveFileTimestamps()设置为false,配置方式:
+
 
 ```
 tasks.withType(AbstractArchiveTask) {
@@ -696,6 +699,7 @@ tasks.withType(AbstractArchiveTask) {
 ### 日志相关
 #### 1.选择日志打印的level
 有六种level,如下:
+
 | levele | 用途 |
 |--------|--------|
 |   ERROR     | 错误信息       |
