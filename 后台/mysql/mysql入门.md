@@ -79,6 +79,47 @@ select user,host from user;
 
 ##### NUMERIC
 ![](datatype_int.png)
+```
+DECIMAL(5,2) # 表示最大5位，且小数点2位，取值范围为-999.99到999.99
+```
+- FLOAT 　4个字节
+- DOUBLE　８个字节
+
+整形的类型支持在定义时后添加位数，如
+```
+INT(4)
+```
+这仅仅是用于标记，并不会对实际存放数据的范围有影响.
+
+unsigned:
+- 所有的INTEGER类型都可以用unsigned修饰，所保存的正数范围都会加倍
+- FLOAT,DOUBLE和DECIMAL都可以用unsigned修饰，但保存的数据范围并不会发生改变.
+
+##### Date＆Time类型
+
+| 数据类型 | 默认值 |
+|--------|--------|
+|   DATE     |  '0000-00-00'      |
+|   TIME     |     '00:00:00'   |
+|   DATETIME     |    	'0000-00-00 00:00:00'     |
+|   TIMESTAMP     |     	'0000-00-00 00:00:00'    |
+|   YEAR     |      	0000   |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -86,6 +127,7 @@ select user,host from user;
 #### 增删改查
 
 ***
+
 #####　INSERT
 语法:
 ```
