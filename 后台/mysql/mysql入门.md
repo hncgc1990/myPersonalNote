@@ -75,6 +75,36 @@ select user,host from user;
 ```
 ![](showuser.png)
 
+#### 登陆相关命令
+```
+mysql -h 127.0.0.1 -u 用户名 -p #登陆命令
+mysql> exit #退出登陆
+mysql> status; #显示当前mysql的各种信息
+mysql> select version(); #显示当前mysql的版本
+mysql> show global variables like 'port'; #查看MySQL端口号
+```
+
+#### 数据库操作
+```
+show databases; #列出所有数据库
+use db_name; #进入到制定的数据库中
+create database db_name character set utf8; #创建一个名为db_name的数据库且字符编码指定为utf8
+drop database db_name; #删除 库名为db_name的库
+show tables; #列出所有的表名
+describe table_name; #显示数据表的结构
+```
+
+#### 数据表操作
+```
+CREATE TABLE 'user' (
+'id' int(100) unsigned NOT NULL AUTO_INCREMENT primary key,
+'password' varchar(32) NOT NULL DEFAULT '' COMMENT '用户密码',
+'reset_password' tinyint(32) NOT NULL DEFAULT '' COMMENT '',
+'mobile' varchar(20) NOT NULL DEFAULT '' COMMENT '',
+'create_at' timestamp(6) NOT NULL DEFAULT 
+)
+```
+
 #### 数据类型
 
 ##### NUMERIC
@@ -249,51 +279,22 @@ expr的类型转换,在使用expr的时候，有可能会使用到不同的类�
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #### 解决问题
 可以尝试telnet来查看端口号是否正常.
 - [因为防火墙的关系没办法连接上mysql](https://blog.csdn.net/u013257111/article/details/79063578)
 
 
+#### 小技巧
+存储ip地址
+```
+inet_aton 把ip转为无符号整型(4-8位) 
+inet_ntoa 把整型的ip转为电地址
+```
+[ip地址存放](https://www.cnblogs.com/phpper/p/10220703.html)
 
 
 参考：
 - [安装](http://www.runoob.com/mysql/mysql-install.html)
 - [21分钟MySQL基础入门](https://github.com/jaywcjlove/mysql-tutorial/blob/master/21-minutes-MySQL-basic-entry.md#%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5)
 - [官方文档](https://dev.mysql.com/doc/refman/5.5/en/)
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- [Mysql合集](https://www.cnblogs.com/phpper/category/944100.html)
