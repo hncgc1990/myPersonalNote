@@ -127,6 +127,49 @@ TIMESTAMP类型提供了自动更新功能[TODO](https://dev.mysql.com/doc/refma
 ###### TIME类型
 TIME类型的范围超过24小时是因为TIME类型还可以用来保存两个时间点之间的时间间隔.
 
+###### YEAR类型
+YEAR仅仅占用一个字节
+
+###### TIMESTAMP类型
+TIMESTAMP提供自动初始化和更新为当前时间．
+- 只要任何一列有改变，TIMESTAMP类型的列就会自动更新为当前时间．除非用户手动设置TIMESTAMP列的值．
+- 如果其他列没有改变，却想改变TIMESTAMP的值，可以手动设置为CURRENT_TIMESTAMP
+
+| 当前时间的获取方式 |
+|--------|
+|  NOW() |
+|  CURRENT_TIMESTAMP() |
+|  CURRENT_TIMESTAMP |
+|  LOCALTIME() |
+|  LOCALTIME |
+|  LOCALTIMESTAMP |
+|  LOCALTIMESTAMP() |
+
+创建TIMESTAMP类型时的修饰语句
+- DEFAULT CURRENT_TIMESTAMP 设置默认值为当前时间
+- ON UPDATE CURRENT_TIMESTAMP　更新时自动更新为当前时间
+
+添加这两个修饰语句跟默认的方式都表示默认和更新时自动更新为当前时间
+```sql
+CREATE TABLE t1 (
+  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE t1 (
+  ts TIMESTAMP
+);
+```
+
+关于TIMESTAMP的值为NULL
+- 如果TIMESTAMP指定为NOT NULL(没有明确指定为NULL或者指定了默认值),那么当TIMESTAMP的值为NULL时，MySQL会设置当前列的值为当前时间.
+- 如果TIMESTAMP可为NULL,且设置了默认值，那么如果TIMESTAMP的值为NULL,MySQL会把当前列的值为NULL,但设置了默认值的话，那么值就是默认值.
+
+关于时间类型之间的转换
+- DATE转DATETIME或者TIMESTAMP,仅仅添加'00:00:00',DATE转TIME，not work,值都是'00:00:00'
+- DATETIME或者TIMESTAMP转DATE就把时分秒去掉，转TIME就把年月日去掉.
+
+
+##### STRING类型
 
 
 
@@ -145,7 +188,7 @@ TIME类型的范围超过24小时是因为TIME类型还可以用来保存两个�
 
 #####　INSERT
 语法:
-```
+```sql
 INSERT INTO tb_name VALUES　(列0值,列1值,列2值,...);#值的顺序跟列顺序一致
 INSERT INTO tb_name (列1,列2,...) VALUES [(值1,值2,值3,...),(值1,值2,值3,...),...]; 
 
@@ -159,7 +202,7 @@ ON DUPLICATE KEY UPDATE assignment_list
 ```
 
 eg:
-```
+```sql
 INSERT INTO Persons (LastName,Address) VALUES ('JSLite','ShangHai');
 
 INSERT INTO meeting SET a=1,b=3;
@@ -176,13 +219,13 @@ INSERT INTO tbl_name (a,b,c) VALUES(1,2,3),(4,5,6),(7,8,9);
 2. 指定默认值：指的是在创建数据表的语句中DEFAULT value的这个值.
 ---
 - 插入时不指定列和值
-```
+```sql
 INSERT INTO tbl_name () VALUES();
 ```
 在不同的模式下，有不同的行为:在strict模式下,如果有列没有指定默认值，MySQL就会报错，而在关闭strict模式下,MySQL会给没有指定默认值的列，使用隐含默认值.
 
 - 使用DEFAULT()函数获取指定默认值 
-```
+```sql
 DEFAULT(col_name)
 INSERT INTO t SET i = DEFAULT(i)+1;
 ```
