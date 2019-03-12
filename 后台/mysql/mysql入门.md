@@ -2,7 +2,7 @@
 [TOC]
 #### mysql安装
 ##### cenos7.5中安装mysql
-```
+```sql
 wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
 rpm -ivh mysql-community-release-el7-5.noarch.rpm
 yum update
@@ -10,27 +10,27 @@ yum install mysql-server
 ```
 
 ##### 权限设置
-```
+```sql
 chown mysql:mysql -R /var/lib/mysql
 ```
 
 ##### 初始化MySQL
-```
+```sql
 mysqld --initialize
 ```
 
 ##### 启动MySQL
-```
+```sql
 systemctl start mysqld
 ```
 
 ##### 关闭MySQL
-```
+```sql
 systemctl stop mysqld
 ```
 
 ##### 查看MySQL的运行状态
-```
+```sql
 systemctl status mysqld
 ```
 
@@ -38,18 +38,18 @@ systemctl status mysqld
 #### 初始化
 ##### 设置root密码
 Mysql安装成功后，默认的root用户密码为空，你可以使用以下命令来创建root用户的密码：
-```
+```sql
 mysqladmin -u root password "new_password";
 ```
 
 通过以下命令连接数据库：
-```
+```sql
 mysql -u root -p
 
 ```
 
 ##### 新建用户并授权
-```
+```sql
 ＃表示授予了192.168.0.111从远程用root用户名和123456密码对所有数据库所有表的所有权限
 GRANT ALL PRIVILEGES ON *.* TO root@'192.168.0.111' IDENTIFIED BY '123456' WITH GRANT OPTION;
 
@@ -65,18 +65,18 @@ GRANT ALL PRIVILEGES ON user.* to 'keke'@'localhost' IDENTIFIED BY 'haha' WITH G
 - @'%' %表示所有的外来IP,localhost表示本地主机，％并不包括localhost
 
 ==注意:调用以下命令，方可即时刷新权限，或者重启数据库==
-```
+```sql
 FLUSH PRIVILEGES;
 ```
 新增用户之后可以使用以下命令（mysql数据库下的user表）
-```
+```sql
 use mysql;
 select user,host from user;
 ```
 ![](showuser.png)
 
 #### 登陆相关命令
-```
+```sql
 mysql -h 127.0.0.1 -u 用户名 -p #登陆命令
 mysql> exit #退出登陆
 mysql> status; #显示当前mysql的各种信息
@@ -85,7 +85,7 @@ mysql> show global variables like 'port'; #查看MySQL端口号
 ```
 
 #### 数据库操作
-```
+```sql
 show databases; #列出所有数据库
 use db_name; #进入到制定的数据库中
 create database db_name character set utf8; #创建一个名为db_name的数据库且字符编码指定为utf8
@@ -95,7 +95,7 @@ describe table_name; #显示数据表的结构
 ```
 
 #### 数据表操作
-```
+```sql
 CREATE TABLE 'user' (
 'id' int(100) unsigned NOT NULL AUTO_INCREMENT primary key,
 'password' varchar(32) NOT NULL DEFAULT '' COMMENT '用户密码',
@@ -109,14 +109,14 @@ CREATE TABLE 'user' (
 
 ##### NUMERIC
 ![](datatype_int.png)
-```
+```sql
 DECIMAL(5,2) # 表示最大5位，且小数点2位，取值范围为-999.99到999.99
 ```
 - FLOAT 　4个字节
 - DOUBLE　８个字节
 
 整形的类型支持在定义时后添加位数，如
-```
+```sql
 INT(4)
 ```
 这仅仅是用于标记，并不会对实际存放数据的范围有影响.
@@ -200,8 +200,36 @@ CREATE TABLE t1 (
 
 
 ##### STRING类型
+###### CHAR和VARCHAR
+- CHAR类型:指定的长度就是保存的长度，如果保存的内容不足指定的长度，就会用空格右边填充完整.从MySQL中获取的时候就会删除填充的空格.除非开启[PAD_CHAR_TO_FULL_LENGTH](https://dev.mysql.com/doc/refman/5.5/en/sql-mode.html#sqlmode_pad_char_to_full_length)模式.指定长度为0-255.
+- VARCHAR类型:可变长度字符串，指定的长度为最大长度.会使用1到2个字节存储字符串的字节数,小于255个字节使用一个字节保存，多余255就是用2个字节保存.[关于最大值TODO](https://dev.mysql.com/doc/refman/5.5/en/column-count-limit.html)
+
+| 需要保存的值 | CHAR(4)保存的值 | 保存需要的字节 | VARCHAR(4)保存的值 |保存需要的字节 |
+|--------|--------|--------|--------|--------|
+|   ''     |   '&nbsp;&nbsp;&nbsp;&nbsp;'     |  4      |   ''     |     1   |
+|    'ab'    | 'ab&nbsp;&nbsp;'    |    4    |   'ab'     |     3(字节数占一个字节)  |
+|   'abcd'     | 'abcd'     |  4      |   'abcd'     |   5 (字节数占一个字节)    |
+|   'abcdefgh'     |  'abcd' |  4     |  'abcd'      |   5 (字节数占一个字节)    |
+
+最后一行如果在strict模式中，就会报错.
+
+==注意：CHAR类型的数据如果结尾为空白，那么获取的时候会被删除掉，丢失掉原来的数据==
+
+###### ENUM
+枚举类型的优点:
+- 保存的数据会优化成数字，减少空间的占用
+- 保存和获取的数据都是枚举的字面字符串，增加可读性。
+
+枚举类型的缺点：
 
 
+创建ENUM类型的列
+```sql
+CREATE TALBE shirts(
+	name VARCHAR(40),
+    size ENUM('x-small','small','medium',large','x-large')
+);
+```
 
 
 
@@ -262,7 +290,7 @@ INSERT INTO t SET i = DEFAULT(i)+1;
 
 ###### expr表达式
 *expr*表示式指的是在指定值的时候，可以使用在当前列之前声明的列名a获取a列的值．**例外的是如果一个列是AUTO_INCREMENT的，那么这一列是不可以引用的，因为AUTO_INCREMENT是最后进行运算的,如果引用了返回0**
-```
+```sql
 INSERT INTO tbl_name (col1,col2) VALUES(15,col1*2);
 ```
 最后赋值的col1＊2就是*expr*. 
@@ -286,7 +314,7 @@ expr的类型转换,在使用expr的时候，有可能会使用到不同的类�
 
 #### 小技巧
 存储ip地址
-```
+```sql
 inet_aton 把ip转为无符号整型(4-8位) 
 inet_ntoa 把整型的ip转为电地址
 ```
