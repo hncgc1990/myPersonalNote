@@ -221,6 +221,8 @@ CREATE TABLE t1 (
 - 保存和获取的数据都是枚举的字面字符串，增加可读性。
 
 枚举类型的缺点：
+- 在建表中ENUM列定义中不可以使用CONCAT函数
+- 在建表中ENUM列定义中不可以使用变量
 
 
 创建ENUM类型的列
@@ -230,8 +232,109 @@ CREATE TALBE shirts(
     size ENUM('x-small','small','medium',large','x-large')
 );
 ```
+以上创建的size列，保存在MySQL中的值如下：
+
+| 字面值 | 保存在MySQL的值 |
+|--------|--------|
+|    NULL    |   NULL     |
+|    ''    |   0     |
+|    'x-small''    |   1    |
+|    'small'    |   2     |
+|    'medium'    |   3     |
+|    'large'    |   4     |
+|    'x-large'    |   5     |
+
+在查询中可以通过以下方式获取实际保存的值（即1,2,3...）等
+```sql
+ SELECT enum_col+0 FROM tbl_name;
+```
+同样例如SUM()和AVG()等函数可以将ENUM类型的值强转成对应保存的值.
+
+- 如果插入不在枚举列表中的值，MySQL会把值替换成空字符串，对应保存的值就会是0.但在strict模式中，就会报错.
+- 如果ENUM允许为NULL,则默认值为NULL,如果ENUM不允许，即NOT NULL,默认值为枚举列表中的第一个值.
+- 建议定义枚举列表顺序根据自然顺序，因为当使用order by ENUM的时候，排序根据NULL->0->ENUM列定义的顺序
+
+==在枚举中不可以定义相同的值，在strict模式中就会报错==
+
+预想的场景：保存性别，
+
+###### SET类型
+创建SET类型的列：
+```sql
+CREATE TALBE shirts(
+	name VARCHAR(40),
+    hobby SET('football','basketball')
+);
+```
+那么可能的值如下:
+```sql
+''
+'football'
+'basketball'
+'football,basketball'
+```
+
+跟ENUM一样，保存的值并不是定义的值，而是数字，如果SET('a','b','c','d'),那么：
+| 元素 | 十进制数字值 | 二进制的值|
+|--------|--------|--------|
+|   'a'     |   1     |	 0001  ｜
+|   'b'     |    2    | 0010	｜
+|   'c'     |     4   | 0100	｜
+|   'd'     |      8  |	1000   ｜
+这里仅仅列出单个值的情况，最终可能有0-15共16个值，例如：'a,d'的值就是9,对应的二进制就是1001
+
+- 无论插入数据表时SET的元素顺序如何，最终获取的时候会返回定义时的顺序．
+- 无论插入数据表时单个SET的元素出现次数多寡，最后获取的时候仅仅返回一个．
+- 排序的顺序为NULL->数字值的顺序
+
+```sql
+CREATE TABLE myset (col SET('a', 'b', 'c', 'd'));
+INSERT INTO myset (col) VALUES ('a,d'), ('d,a'), ('a,d,a'), ('a,d,d'), ('d,a,d');
+SELECT col FROM myset;
++------+
+| col  |
++------+
+| a,d  |
+| a,d  |
+| a,d  |
+| a,d  |
+| a,d  |
++------+
+5 rows in set (0.04 sec)
+```
+
+查询方式:
+```sql
+# 查找所有set_col_name中包含football的行
+SELECT * FROM tb_name WHERE FIND_IN_SET('football',set_col_name)>0;
+
+# 查找所有set_col_name中包含football的行，这里进行的是模糊搜索,可以会比上面的查询包含多一些结果
+SELECT * FROM tb_name WHERE set_col_name　LIKE '%football%'
+
+＃查询值等于'val1,val2'的行，注意元素的顺序
+SELECT * FROM tbl_name WHERE set_col = 'val1,val2';
+```
+- [ ]查询的顺序是否有区别，保存是否会跟插入时顺序一样．
 
 
+==定义的元素中不要含有逗号,也不要重复==
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+预想场景：保存多选项，
 
 
 
