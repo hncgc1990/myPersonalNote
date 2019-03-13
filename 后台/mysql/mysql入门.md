@@ -275,12 +275,13 @@ CREATE TALBE shirts(
 ```
 
 跟ENUM一样，保存的值并不是定义的值，而是数字，如果SET('a','b','c','d'),那么：
+
 | 元素 | 十进制数字值 | 二进制的值|
 |--------|--------|--------|
-|   'a'     |   1     |	 0001  ｜
-|   'b'     |    2    | 0010	｜
-|   'c'     |     4   | 0100	｜
-|   'd'     |      8  |	1000   ｜
+|   'a'     |   1     |	 0001  |
+|   'b'     |    2    | 0010	|
+|   'c'     |     4   | 0100	|
+|   'd'     |      8  |	1000   |
 这里仅仅列出单个值的情况，最终可能有0-15共16个值，例如：'a,d'的值就是9,对应的二进制就是1001
 
 - 无论插入数据表时SET的元素顺序如何，最终获取的时候会返回定义时的顺序．
@@ -311,37 +312,12 @@ SELECT * FROM tb_name WHERE FIND_IN_SET('football',set_col_name)>0;
 # 查找所有set_col_name中包含football的行，这里进行的是模糊搜索,可以会比上面的查询包含多一些结果
 SELECT * FROM tb_name WHERE set_col_name　LIKE '%football%'
 
-＃查询值等于'val1,val2'的行，注意元素的顺序
+＃查询值等于'val1,val2'的行，注意元素的顺序需要跟定义SET时保持一致，否则将查询不到对应的结果
 SELECT * FROM tbl_name WHERE set_col = 'val1,val2';
 ```
-- [ ]查询的顺序是否有区别，保存是否会跟插入时顺序一样．
-
-
 ==定义的元素中不要含有逗号,也不要重复==
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 预想场景：保存多选项，
-
-
-
-
-
-
-
 
 #### 增删改查
 
@@ -405,6 +381,93 @@ expr的类型转换,在使用expr的时候，有可能会使用到不同的类�
 **转换的规则：**
 - string TO number(INT,YEAR) 只会把字符串中最前面看似是数字的转换
 - string TO number(FLOAT,DECIMAL)会考虑整个字符串的值
+
+
+##### SELECT
+语法:
+```sql
+SELECT
+	select_expr
+    FROM tb_references
+    [WHERE where_condition]
+    [GROUP BY {col_name | expr| position}]
+    [HAVING where_condition]
+	[ORDER BY{col_name | expr| position}]
+    [LIMIT [row_count,offset]
+```
+
+例子：
+```sql
+# 表station取个别名叫s,查询表包含字段id=13或者14的,但id不等于4的行
+SELECT s.id from station s WHERE id in (13,14) and id not in (4);
+
+#获取tb_name中的所有行的所有列
+SELECT * FROM tb_name;
+
+```
+
+
+select_expr表示要选择的列名,*表示所有,可以使用`col_name`/`tb_name.col_name`/`db_name.tb_name.col_name`三种方式来引述列名.
+
+- 列的别名,别名可用于`GROUP BY`,`ORDER BY`,`HAVING`的子句中.
+
+```sql
+语法：
+select_expr AS alias_name
+
+# CONCAT(last_name,', ',first_name)表达式用full_name作为别名,这个别名使用在ORDER BY子句中. 
+SELECT CONCAT(last_name,', ',first_name) AS full_name
+  FROM mytable ORDER BY full_name;
+```
+
+tb_references表示要查询的表,可以使用`tb_name`/`db_name.tb_name`来引述表名
+
+- 表的别名
+
+```sql
+#语法
+表名 AS 别名
+
+# employee用t1做别名,info用t2做别名
+SELECT t1.name, t2.salary FROM employee AS t1, info AS t2
+  WHERE t1.name = t2.name;
+```
+
+- where_condition
+- GROUP BY
+- HAVING 
+- ORDER BY
+- LIMIT
+
+
+[官方文档-SELECT语法](https://dev.mysql.com/doc/refman/5.7/en/select.html)
+
+
+##### UPDATE
+更新语法：
+```sql
+# 更新一个表的语法
+UPDATE tb_name
+	SET 列名=值 列名=值
+    [WHERE 判断条件]
+    [ORDER BY 某个列]
+    [LIMIT 分页]
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ***
 
