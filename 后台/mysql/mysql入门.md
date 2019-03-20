@@ -127,3 +127,4 @@ inet_ntoa 把整型的ip转为电地址
 - [21分钟MySQL基础入门](https://github.com/jaywcjlove/mysql-tutorial/blob/master/21-minutes-MySQL-basic-entry.md#%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5)
 - [官方文档](https://dev.mysql.com/doc/refman/5.5/en/)
 - [Mysql合集](https://www.cnblogs.com/phpper/category/944100.html)
+- [官方提供EMPLOYEE数据库](https://dev.mysql.com/doc/employee/en/employees-installation.html)
