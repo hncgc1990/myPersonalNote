@@ -1,5 +1,30 @@
+<!-- MarkdownTOC -->
 
-[TOC]
+- [mysql安装](#mysql安装)
+    - [cenos7.5中安装mysql](#cenos75中安装mysql)
+    - [权限设置](#权限设置)
+    - [初始化MySQL](#初始化mysql)
+    - [启动MySQL](#启动mysql)
+    - [关闭MySQL](#关闭mysql)
+    - [查看MySQL的运行状态](#查看mysql的运行状态)
+- [初始化](#初始化)
+    - [设置root密码](#设置root密码)
+    - [新建用户并授权](#新建用户并授权)
+- [登陆相关命令](#登陆相关命令)
+- [数据库操作](#数据库操作)
+- [数据表操作](#数据表操作)
+    - [新建表](#新建表)
+    - [创建后表的修改](#创建后表的修改)
+        - [添加列](#添加列)
+        - [修改列](#修改列)
+        - [删除列](#删除列)
+        - [重命名表](#重命名表)
+    - [删除表](#删除表)
+- [解决问题](#解决问题)
+- [小技巧](#小技巧)
+
+<!-- /MarkdownTOC -->
+
 #### mysql安装
 ##### cenos7.5中安装mysql
 ```sql
@@ -95,6 +120,9 @@ describe table_name; #显示数据表的结构
 ```
 
 #### 数据表操作
+
+##### 新建表
+
 ```sql
 CREATE TABLE 'user' (
 'id' int(100) unsigned NOT NULL AUTO_INCREMENT primary key,
@@ -104,6 +132,78 @@ CREATE TABLE 'user' (
 'create_at' timestamp(6) NOT NULL DEFAULT 
 )
 ```
+
+##### 创建后表的修改
+###### 添加列
+```sql
+alter table 表名 add 列名 列数据类型 [after 插入位置];
+# 在students的最后追加列address
+alter table students add address char(60);
+# 在名为age的列后插入列birthday
+alter table students add birthday date after age;
+```
+
+###### 修改列
+```sql
+语法：alter table 表名 change 列名称 新的列名称 新的列数据类型;
+# 将表tel 列改名为telphone
+alter table students change tel telphone char(13) default '-';
+# 将name列的数据类型改为char(16)
+alter table students change name name char(16) not null;
+```
+
+###### 删除列
+```sql
+语法：alter table tb_name drop 列名称;
+
+#删除表students 中的birthday列
+alter table students drop birthday;
+```
+
+###### 重命名表
+```sql
+alter table tb_name rename 新表名;
+#重命名students为roommates;
+alter table students rename roommates;
+```
+
+##### 删除表
+```sql
+语法：drop table 表名;
+#删除roommates表
+drop table roommates;
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
